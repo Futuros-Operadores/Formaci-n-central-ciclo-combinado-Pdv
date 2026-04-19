@@ -79,44 +79,118 @@
     </div>
 
     <div id="examen" class="card">
-        <h2>Evaluación de Módulo</h2>
-        <p id="pregunta-texto">¿Cuál es el componente que une el ciclo de gas con el ciclo de vapor?</p>
-        <div id="opciones">
-            <button class="opcion" onclick="select(0)">A) El Condensador</button>
-            <button class="opcion" onclick="select(1)">B) La Caldera de Recuperación (HRSG)</button>
-            <button class="opcion" onclick="select(2)">C) El Compresor de Aire</button>
+        <div id="quiz-box">
+            <h2 id="pregunta-titulo">Evaluación de Conocimientos</h2>
+            <p id="progreso" style="font-weight: bold; color: #666;"></p>
+            <p id="enunciado" style="font-size: 1.1rem; margin-bottom: 20px;"></p>
+            <div id="opciones-contenedor"></div>
+            <button id="btn-siguiente" class="btn-check" onclick="siguientePregunta()" style="display:none; background: #27ae60; margin-top: 20px; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; cursor: pointer;">Siguiente Pregunta</button>
         </div>
-        <button class="btn-check" onclick="check()">Verificar Resultado</button>
-        <div id="res-box" class="resultado"></div>
+        
+        <div id="resultado-final" style="display:none; text-align: center;">
+            <h2>Resultado del Examen</h2>
+            <div id="nota-circulo" style="font-size: 3rem; font-weight: bold; margin: 20px 0;"></div>
+            <p id="mensaje-final"></p>
+            <button class="btn-check" onclick="reiniciarExamen()" style="background: #1a3a5a; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; cursor: pointer;">Reintentar Examen</button>
+        </div>
     </div>
 
-</div>
+</div> <script>
+    const bancoPreguntas = [
+        { q: "¿Cuál es la eficiencia media de una planta de ciclo combinado?", a: ["40%", "Superior al 60%", "Alrededor del 25%"], c: 1 },
+        { q: "¿Qué componente del ciclo de gas succiona y eleva la presión del aire atmosférico?", a: ["Cámara de combustión", "Turbina", "Compresor"], c: 2 },
+        { q: "¿Cómo se llama el ciclo termodinámico de la turbina de gas?", a: ["Ciclo Brayton", "Ciclo Rankine", "Ciclo Carnot"], c: 0 },
+        { q: "¿Cuál es la función principal de la Caldera de Recuperación (HRSG)?", a: ["Quemar más gas natural", "Enfriar el agua del condensador", "Generar vapor usando el calor de escape de la TG"], c: 2 },
+        { q: "¿A qué temperatura aproximada salen los gases de la turbina de gas hacia la caldera?", a: ["100°C", "500-600°C", "1000°C"], c: 1 },
+        { q: "En la HRSG, ¿qué parte se encarga de precalentar el agua antes de evaporarla?", a: ["Sobrecalentador", "Economizador", "Evaporador"], c: 1 },
+        { q: "¿Qué ocurre en el condensador del ciclo de vapor?", a: ["El agua se convierte en vapor", "El vapor vuelve a estado líquido mediante enfriamiento", "Se eleva la presión del vapor"], c: 1 },
+        { q: "¿Por qué es crítica la Planta de Tratamiento de Agua (PTA)?", a: ["Para que el agua sepa mejor", "Para evitar corrosión en álabes y tubos por impurezas", "Para enfriar el generador"], c: 1 },
+        { q: "¿Qué es un 'Trip' en el sistema de control DCS?", a: ["Un viaje de inspección", "Una parada de emergencia automática por seguridad", "Un aumento de potencia"], c: 1 },
+        { q: "¿Cómo se llama el ciclo que sigue el vapor en la turbina de vapor?", a: ["Ciclo Rankine", "Ciclo Brayton", "Ciclo Diesel"], c: 0 }
+    ];
 
-<script>
-    let selected = null;
-    const correctAns = 1; // La opción B es la correcta
+    let indiceActual = 0;
+    let aciertos = 0;
 
     function showTab(id) {
-        // Ocultar todas las tarjetas
         document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
         document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-        
-        // Mostrar la seleccionada
         document.getElementById(id).classList.add('active');
         document.getElementById('btn-' + id).classList.add('active');
-        
-        // Resetear examen si cambia de pestaña
-        if(id !== 'examen') resetExamen();
+        if(id === 'examen') reiniciarExamen();
     }
 
-    function select(idx) {
-        selected = idx;
-        document.querySelectorAll('.opcion').forEach((btn, i) => {
-            btn.style.background = (i === idx) ? '#e3f2fd' : '#fff';
-            btn.style.borderColor = (i === idx) ? '#1a3a5a' : '#ccc';
+    function cargarPregunta() {
+        const p = bancoPreguntas[indiceActual];
+        document.getElementById('progreso').innerText = `Pregunta ${indiceActual + 1} de ${bancoPreguntas.length}`;
+        document.getElementById('enunciado').innerText = p.q;
+        const contenedor = document.getElementById('opciones-contenedor');
+        contenedor.innerHTML = '';
+        p.a.forEach((opcion, i) => {
+            const btn = document.createElement('button');
+            btn.innerText = opcion;
+            btn.className = 'opcion';
+            btn.style.display = "block";
+            btn.style.width = "100%";
+            btn.style.padding = "10px";
+            btn.style.margin = "10px 0";
+            btn.style.background = "white";
+            btn.style.border = "1px solid #ccc";
+            btn.style.borderRadius = "5px";
+            btn.style.cursor = "pointer";
+            btn.onclick = () => verificar(i, btn);
+            contenedor.appendChild(btn);
         });
+        document.getElementById('btn-siguiente').style.display = 'none';
     }
 
+    function verificar(seleccionado, elemento) {
+        const correcta = bancoPreguntas[indiceActual].c;
+        const botones = document.querySelectorAll('.opcion');
+        botones.forEach(b => b.disabled = true); 
+        if(seleccionado === correcta) {
+            elemento.style.background = "#d4edda";
+            elemento.style.borderColor = "#27ae60";
+            aciertos++;
+        } else {
+            elemento.style.background = "#f8d7da";
+            elemento.style.borderColor = "#e74c3c";
+            botones[correcta].style.background = "#d4edda";
+            botones[correcta].style.borderColor = "#27ae60";
+        }
+        document.getElementById('btn-siguiente').style.display = 'block';
+    }
+
+    function siguientePregunta() {
+        indiceActual++;
+        if(indiceActual < bancoPreguntas.length) {
+            cargarPregunta();
+        } else {
+            mostrarResultado();
+        }
+    }
+
+    function mostrarResultado() {
+        document.getElementById('quiz-box').style.display = 'none';
+        document.getElementById('resultado-final').style.display = 'block';
+        const nota = (aciertos / bancoPreguntas.length) * 10;
+        document.getElementById('nota-circulo').innerText = nota.toFixed(1);
+        document.getElementById('mensaje-final').innerText = nota >= 5 ? "¡Aprobado! Estás listo para operar." : "Necesitas repasar el manual técnico.";
+        document.getElementById('nota-circulo').style.color = nota >= 5 ? "#27ae60" : "#e74c3c";
+    }
+
+    function reiniciarExamen() {
+        indiceActual = 0;
+        aciertos = 0;
+        document.getElementById('quiz-box').style.display = 'block';
+        document.getElementById('resultado-final').style.display = 'none';
+        cargarPregunta();
+    }
+
+    cargarPregunta();
+</script>
+</body>
+</html>
     function check() {
         const box = document.getElementById('res-box');
         if(selected === null) { alert("Selecciona una respuesta"); return; }
