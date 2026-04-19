@@ -1,0 +1,44 @@
+MANUAL FUNDAMENTAL: OPERACIÓN DE PLANTAS DE CICLO COMBINADO
+1. Introducción: ¿Qué es el Ciclo Combinado?
+Una central de ciclo combinado es una instalación donde se genera electricidad mediante el uso conjunto de dos turbinas: una de gas y otra de vapor. La magia de este sistema es que aprovecha el calor residual de la primera para hacer funcionar la segunda, logrando una eficiencia energética superior al 60% (mucho mayor que una térmica convencional).
+
+2. El Ciclo de Gas (Ciclo Brayton)
+Es la primera etapa de la generación. Se compone de tres elementos críticos unidos por un solo eje:
+
+Compresor: Succiona aire de la atmósfera y lo comprime a alta presión.
+
+Cámara de Combustión: El aire comprimido se mezcla con el combustible (gas natural) y se quema, creando gases a altísima temperatura y presión.
+
+Turbina de Gas (TG): Los gases calientes se expanden a través de los álabes de la turbina, haciéndola girar a gran velocidad. Este giro mueve un generador que produce la primera parte de la electricidad.
+
+3. La Caldera de Recuperación (HRSG)
+Este es el "puente" entre los dos ciclos. Los gases que salen de la turbina de gas todavía están muy calientes (aprox. 500-600°C). En lugar de tirarlos por la chimenea, se pasan por la HRSG (Heat Recovery Steam Generator).
+
+Función: Dentro de la caldera hay miles de tubos por los que circula agua. Los gases calientes pasan por fuera de estos tubos, calentando el agua hasta convertirla en vapor a alta presión.
+
+Partes clave: Economizador (precalienta el agua), Evaporador (crea el vapor) y Sobrecalentador (eleva la temperatura del vapor para que sea seco y potente).
+
+4. El Ciclo de Vapor (Ciclo Rankine)
+El vapor generado en la caldera de recuperación se dirige hacia la Turbina de Vapor (TV).
+
+Expansión: El vapor choca contra los álabes de la turbina de vapor, haciéndola girar. Este giro mueve un segundo generador (o el mismo, según el diseño de la planta).
+
+Condensación: Una vez que el vapor ha entregado su energía, pasa al Condensador, donde se enfría (usando agua de mar, río o torres) y vuelve a convertirse en agua líquida.
+
+Bombeo: El agua líquida es bombeada de nuevo hacia la caldera de recuperación para repetir el ciclo.
+
+5. Sistemas Auxiliares Críticos
+Para que los ciclos principales funcionen, se necesitan sistemas de apoyo:
+
+Sistema de Refrigeración: Fundamental para condensar el vapor. Puede ser mediante torres de enfriamiento o aerocondensadores.
+
+Planta de Tratamiento de Agua (PTA): El agua del ciclo debe ser ultra pura (desmineralizada) para no corroer los álabes de las turbinas ni obstruir los tubos de la caldera.
+
+Estación de Regulación y Medida (ERM): Donde se recibe el gas natural, se filtra y se ajusta la presión antes de entrar en la cámara de combustión.
+
+6. Lógica de Control y Seguridad
+La planta está gobernada por un DCS (Sistema de Control Distribuido).
+
+Enclavamientos: Son condiciones de seguridad. Por ejemplo, si la vibración de la turbina es muy alta, el sistema ordena un "Trip" (parada de emergencia) automático para evitar que la máquina se destruya.
+
+Modos de operación: La planta puede operar en "Carga Base" (al máximo siempre) o "Seguimiento de Carga" (subiendo y bajando según la demanda eléctrica del país).
